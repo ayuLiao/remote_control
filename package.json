@@ -5,6 +5,7 @@
   "main": "app/main/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run start:render\" \"wait-on http://localhost:3000 && npm run start:main\" ",
     "start:main": "electron .",
     "start:render": "cd app/renderer/src/main && npm start"
   },
@@ -12,6 +13,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^11.0.4"
+    "concurrently": "^5.3.0",
+    "electron": "^11.0.4",
+    "wait-on": "^5.2.0"
+  },
+  "dependencies": {
+    "electron-is-dev": "^1.2.0"
   }
 }
