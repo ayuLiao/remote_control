@@ -1,6 +1,6 @@
 const EventEmitter = require('events')
 const peer = new EventEmitter()
-const {desktopCapturer} = require('electron')
+const {ipcRenderer, desktopCapturer} = require('electron')
 
 async function getScreenStream() {
     // 用于从桌面上捕获音频和视频的媒体源信息
@@ -17,7 +17,7 @@ async function getScreenStream() {
                 maxWidth: window.screen.width,
                 maxHeight: window.screen.height
             }
-        }
+        } 
     }).then(stream => {
         // 推送事件到事件队列中
         peer.emit('add-stream', stream)
@@ -29,5 +29,21 @@ async function getScreenStream() {
 }
 
 getScreenStream()
+
+peer.on('robot', (type, data) => {
+    if (type === 'mouse') {
+        data.screen = {
+            width: window.screen.width, 
+            height: window.screen.height
+        }
+    }
+
+    // 方便测试
+    setTimeout(() => {
+        ipcRenderer.send('robot', type, data)
+    }, 2000)
+
+    // ipcRenderer.send('robot', type, data)
+})
 
 module.exports = peer
