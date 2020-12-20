@@ -6,7 +6,8 @@ const {myRobot} = require('./robot')
 
 app.on('ready', () => {
     console.log('versions info:', process)
-    createControlWindow()
+    // createControlWindow()
+    createMainWindow()
     handleIPC() // 处理ipc
     myRobot()
 })
