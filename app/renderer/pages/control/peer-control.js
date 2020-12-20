@@ -34,6 +34,29 @@ async function getScreenStream() {
 
 const pc = new window.RTCPeerConnection({})
 
+// RTCPeerConnection方法调用后，onicecandidate方法会被自动调用
+pc.onicecandidate = function(e) {
+    console.log('candidate', JSON.stringify(e.candidate))
+}
+// 它需要等到pc.remoteDescription生效后，addIceCandidate方法添加candidate才会有效
+// 所以，在添加candidate时，先将他缓存起来，等pc.remoteDescription生效后，再一次性将缓存里的candidate添加上
+let candidates = []
+async function addIceCandidate(candidate) {
+    if (candidate) {
+        candidates.push(candidate)
+    }
+    if (pc.remoteDescription && pc.remoteDescription.type) {
+        for (let i = 0; i < candidates.length; i++) {
+            await pc.addIceCandidate(new RTCIceCandidate(candidates[i]))
+        }
+        // 添加完后，缓存置空
+        candidates = []
+    }
+}
+
+// 方便演示
+window.addIceCandidate = addIceCandidate
+
 async function createOffer() {
     // 创建offer SDP
     const offer = await pc.createOffer({
