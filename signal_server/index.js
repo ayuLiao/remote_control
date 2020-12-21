@@ -57,6 +57,7 @@ wss.on('connection', function connection(ws, request) {
                 ws.sendError('user not found')
             }
         } else if (event === 'forward') {
+            console.log('forward', data)
             // 转发需求，当ws.sendRemote方法设置好后，便可以直接通过sendRemote转发数据。
             ws.sendRemote(data.event, data.data)
         } else {
