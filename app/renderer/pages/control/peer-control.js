@@ -3,6 +3,23 @@ const peer = new EventEmitter()
 const {ipcRenderer, desktopCapturer} = require('electron')
 const pc = new window.RTCPeerConnection({})
 
+// reliable: false 不要求数据是必须可达的，即允许一定的丢失
+const dc = pc.createDataChannel('robotchannel', {reliable: false})
+// 建立成功
+dc.onopen = function() {
+    peer.on('robot', (type, data) => {
+        dc.send(JSON.stringify({type, data}))
+    })
+}
+// 接收消息
+dc.onmessage = function(event) {
+    console.log('message', event)
+}
+// 收到错误
+dc.onerror = (e) => {
+    console.log('error', e)
+}
+
 // RTCPeerConnection方法调用后，onicecandidate方法会被自动调用
 pc.onicecandidate = function(e) {
     console.log('candidate', e.candidate)

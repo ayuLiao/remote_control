@@ -22,6 +22,23 @@ async function getScreenStream() {
 
 const pc = new window.RTCPeerConnection({});
 
+// 接受控制端传输的robot指令
+pc.ondatachannel = (e) => {
+    console.log('data', e)
+    e.channel.onmessage = (e) => {
+        console.log('onmessage', e, JSON.parse(e.data))
+        let {type, data} = JSON.parse(e.data)
+        console.log('robot', type, data)
+        if (type === 'mouse') {
+            data.screen = {
+                width: window.screen.width,
+                height: window.screen.height
+            }
+        }
+        ipcRenderer.send('robot', type, data)
+    }
+}
+
 // RTCPeerConnection方法调用后，onicecandidate方法会被自动调用
 pc.onicecandidate = function(e) {
     // console.log('candidate', JSON.stringify(e.candidate))
@@ -39,7 +56,11 @@ async function addIceCandidate(candidate) {
     }
     if (pc.remoteDescription && pc.remoteDescription.type) {
         for (let i = 0; i < candidates.length; i++) {
-            await pc.addIceCandidate(new RTCIceCandidate(candidates[i]))
+            try{
+                await pc.addIceCandidate(new RTCIceCandidate(candidates[i]))
+            } catch (e) {
+                console.log(e)
+            }
         }
         // 添加完后，缓存置空
         candidates = []
