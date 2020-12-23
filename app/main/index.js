@@ -5,16 +5,18 @@ const handleIPC = require('./ipc')
 const {myRobot} = require('./robot')
 const path = require('path')
 
+const {setTray, setAppMenu} = require('./trayandmenu/darwin')
 
-if (process.platform === 'darwin') {
-    // MacOS
-    const {setTray, setAppMenu} = require('./trayandmenu/darwin')
-} else if (process.platform === 'win32') {
-    // windows
-    const {setTray, setAppMenu} = require('./win32')
-} else {
-    // Linux不处理
-}
+// 还未导入，setTray已被调用... 原因未知
+// if (process.platform === 'darwin') {
+//     // MacOS
+//     const {setTray, setAppMenu} = require('./trayandmenu/darwin')
+// } else if (process.platform === 'win32') {
+//     // windows
+//     const {setTray, setAppMenu} = require('./win32')
+// } else {
+//     // Linux不处理
+// }
 
 
 
