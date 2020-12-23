@@ -41,7 +41,8 @@ function show() {
 }
 
 function close() {
-
+    willQuitApp = true
+    win.close()
 }
 
 
