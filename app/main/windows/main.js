@@ -3,6 +3,7 @@ const isDev = require('electron-is-dev')
 const path = require('path')
 
 let win
+let willQuitApp = false
 
 function create() {
     win = new BrowserWindow({
@@ -10,6 +11,16 @@ function create() {
         height: 300,
         webPreferences: {
             nodeIntegration: true
+        }
+    })
+
+    win.on('close', (e) => {
+        if (willQuitApp) {
+            wil = null
+        } else {
+            e.preventDefault()
+            // 假关闭，点击关闭时，隐藏窗口
+            win.hide()
         }
     })
 
@@ -25,4 +36,13 @@ function send(channel, ...args) {
     win.webContents.send(channel, ...args)
 }
 
-module.exports = {create, send}
+function show() {
+    win.show()
+}
+
+function close() {
+
+}
+
+
+module.exports = {create, send, show, close}
