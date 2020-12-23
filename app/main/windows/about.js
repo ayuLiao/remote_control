@@ -1,5 +1,6 @@
 const openAboutWindow = require('about-window').default
 const path = require('path')
+console.log('open about window:', path.join(__dirname, 'icon.png'))
 
 const create = () => openAboutWindow({
     icon_path: path.join(__dirname, 'icon.png'), // 软件图标
